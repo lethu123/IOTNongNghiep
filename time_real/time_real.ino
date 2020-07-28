@@ -6,6 +6,8 @@
 #include "DHTesp.h"
 DHTesp dht;
 
+
+
 #define FIREBASE_HOST "iotnongnghiep-75821.firebaseio.com"
 #define FIREBASE_AUTH "X3ngY9AGfQsXuFPBRVwDDh7SrGnVPinKqizp9XBC"
 #define WIFI_SSID "Thukara"
@@ -23,7 +25,7 @@ String connec;
 float NDmax = 0, NDmin = 100, nd, minTemp, maxTemp;
 float temperature;
 unsigned long ti = 0;
-int light,autoled,dkled;
+int light, autoled, dkled, ledAS;
 
 
 void setup() {
@@ -58,16 +60,20 @@ void setup() {
 
   dht.setup(D1, DHTesp::DHT11);
 
-  Firebase.stream("/setNhietDo");
-   fire_set();
-minTemp=Firebase.getFloat("setNhietDo/min");
-maxTemp=Firebase.getFloat("setNhietDo/max");
-autoled=Firebase.getInt("setNhietDo/auto");
-dkled=Firebase.getInt("setNhietDo/dk");
-Serial.println("setmax:"+String(maxTemp) );
-Serial.println("setmin:"+String(minTemp) );
-Serial.println("auto:"+String(autoled) );
-Serial.println("dkled:"+String(dkled) );
+  Firebase.stream("/setTemp");
+  fire_set();
+  
+  minTemp = Firebase.getFloat("setTemp/min");
+  maxTemp = Firebase.getFloat("setTemp/max");
+  autoled = Firebase.getInt("setTemp/auto");
+  dkled = Firebase.getInt("setTemp/control");
+  //  lam them
+  ledAS = Firebase.getInt("light/led_light");
+  Serial.println("setmax:" + String(maxTemp) );
+  Serial.println("setmin:" + String(minTemp) );
+  Serial.println("auto:" + String(autoled) );
+  Serial.println("dkled:" + String(dkled) );
+  Serial.println("status led as:" + String(ledAS) );
 }
 void loop() {
   while (!timeClient.update()) {
@@ -79,6 +85,6 @@ void loop() {
   nhietdo();
   fire();
   den();
-  
+
   delay(1000);
 }

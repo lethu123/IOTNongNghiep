@@ -13,10 +13,10 @@ void fire_set() {
       autoled = fi.getInt("data");
       Serial.println("auto : " + String(autoled));
     }
-    else if (fi.getString("path") ==  "/dk") {
+    else if (fi.getString("path") ==  "/control") {
 
       dkled = fi.getInt("data");
-      Serial.println("dk led : " + String(dkled));
+      Serial.println("controlLed : " + String(dkled));
     }
   }
 }
