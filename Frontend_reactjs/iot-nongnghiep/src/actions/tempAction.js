@@ -1,6 +1,6 @@
 import { firebaseConnect } from '../firebaseConnect';
 import { getCurrent } from "../helper-func";
-import { MAX, MIN, TEMP, AUTO_MODE, CONTROL_LED, STATUS_UPDATE_MODE, STATUS_UPDATE_CONTROL } from './types';
+import { MAX, MIN, TEMP, AUTO_MODE, CONTROL_LIGHT_GREEN, CONTROL_TEMP_RED, CONTROL_TEMP_BLUE, CONTROL_LIGHT_WHITE } from './types';
 
 export const getTemp = () => async dispatch => {
     const today = getCurrent();
@@ -31,17 +31,44 @@ export const getMinTemp = () => async dispatch => {
     })
 }
 
-export const getControlLED = () => async dispatch => {
-    firebaseConnect.child('light/led_light').on('value', snapshop => {
+export const getControlLightGreen = () => async dispatch => {
+    firebaseConnect.child('setControl/led_light_green').on('value', snapshop => {
         dispatch({
-            type: CONTROL_LED,
+            type: CONTROL_LIGHT_GREEN,
+            res_api: snapshop.val()
+        })
+    })
+}
+
+export const getControlLightWhite = () => async dispatch => {
+    firebaseConnect.child('setControl/led_light_white').on('value', snapshop => {
+        dispatch({
+            type: CONTROL_LIGHT_WHITE,
+            res_api: snapshop.val()
+        })
+    })
+}
+
+export const getControlTempRed = () => async dispatch => {
+    firebaseConnect.child('setControl/led_temp_red').on('value', snapshop => {
+        dispatch({
+            type: CONTROL_TEMP_RED,
+            res_api: snapshop.val()
+        })
+    })
+}
+
+export const getControlTempBlue = () => async dispatch => {
+    firebaseConnect.child('setControl/led_temp_blue').on('value', snapshop => {
+        dispatch({
+            type: CONTROL_TEMP_BLUE,
             res_api: snapshop.val()
         })
     })
 }
 
 export const getModeAuto = () => async dispatch => {
-    firebaseConnect.child('setTemp/auto').on('value', snapshop => {
+    firebaseConnect.child('setControl/auto').on('value', snapshop => {
         dispatch({
             type: AUTO_MODE,
             res_api: snapshop.val()
@@ -50,17 +77,51 @@ export const getModeAuto = () => async dispatch => {
 }
 
 export const updateModeAuto = (status) => async dispatch => {
-    firebaseConnect.child('setTemp/auto').update(status).then(() => firebaseConnect.child('setTemp/auto').on('value'))
+    let ref = firebaseConnect.child('setControl');
+    ref.update({ 'auto': status ? 1 : 0 })
         .then(() =>
-            dispatch({
-                type: STATUS_UPDATE_MODE,
-                res_api: "success"
-            })
+            dispatch(getModeAuto())
         )
-        .catch(error => {
-            dispatch({
-                type: STATUS_UPDATE_MODE,
-                res_api: error
-            })
-        });
+        .then(snapshot => snapshot.val())
+        .catch(error => console.log("jdsjhd", error));
+}
+
+export const updateControlLightGreen = (status) => async dispatch => {
+    let ref = firebaseConnect.child('setControl');
+    ref.update({ 'led_light_green': status ? 1 : 0 })
+        .then(() =>
+            dispatch(getControlLightGreen())
+        )
+        .then(snapshot => snapshot.val())
+        .catch(error => console.log("jdsjhd", error));
+}
+
+export const updateControlLightWhite = (status) => async dispatch => {
+    let ref = firebaseConnect.child('setControl');
+    ref.update({ 'led_light_white': status ? 1 : 0 })
+        .then(() =>
+            dispatch(getControlLightWhite())
+        )
+        .then(snapshot => snapshot.val())
+        .catch(error => console.log("jdsjhd", error));
+}
+
+export const updateControlTempRed = (status) => async dispatch => {
+    let ref = firebaseConnect.child('setControl');
+    ref.update({ 'led_temp_red': status ? 1 : 0 })
+        .then(() =>
+            dispatch(getControlTempRed())
+        )
+        .then(snapshot => snapshot.val())
+        .catch(error => console.log("jdsjhd", error));
+}
+
+export const updateControlTempBlue = (status) => async dispatch => {
+    let ref = firebaseConnect.child('setControl');
+    ref.update({ 'led_temp_blue': status ? 1 : 0 })
+        .then(() =>
+            dispatch(getControlTempBlue())
+        )
+        .then(snapshot => snapshot.val())
+        .catch(error => console.log("jdsjhd", error));
 }

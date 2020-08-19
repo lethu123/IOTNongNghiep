@@ -15,16 +15,16 @@ const allowCrossDomain = function(req, res, next){
     next();
 };
 // var firebase = require('firebase');
-var firebaseConfig = {
-    apiKey: "AIzaSyAk3EWl1CTdCiFI6LE2gbTLbPqaBR410nc",
-    authDomain: "iotnongnghiep-75821.firebaseapp.com",
-    databaseURL: "https://iotnongnghiep-75821.firebaseio.com",
-    projectId: "iotnongnghiep-75821",
-    storageBucket: "iotnongnghiep-75821.appspot.com",
-    messagingSenderId: "505810406746",
-    appId: "1:505810406746:web:7edeb37233043d577b3763",
-    measurementId: "G-5DCD16XN1P"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyAk3EWl1CTdCiFI6LE2gbTLbPqaBR410nc",
+  authDomain: "iotnongnghiep-75821.firebaseapp.com",
+  databaseURL: "https://iotnongnghiep-75821.firebaseio.com",
+  projectId: "iotnongnghiep-75821",
+  storageBucket: "iotnongnghiep-75821.appspot.com",
+  messagingSenderId: "505810406746",
+  appId: "1:505810406746:web:d0d70d3623e87ec87b3763",
+  measurementId: "G-RHW0KW4SVN"
+};
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
 //   firebase.analytics();
@@ -35,19 +35,27 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
-    res.send('hi')
-})
+// app.get('/', (req, res) => {
+//     res.send('hi')
+// })
+app.get('/', function (req, res) {
+  
+  console.log("HTTP Get Request");
+  res.send("HTTP GET Request");
+  //Insert key,value pair to database
+  firebase.database().ref('/TestMessages').set({TestMessage: 'GET Request thu'});
+  
+});
 
-app.get('/e', function (req, res) {
-  firebase.database.enableLogging(true)
+app.get('/thu', function (req, res) {
+  // firebase.database.enableLogging(true)
     console.log("HTTP Get Request");
-  var userReference = firebase.database().ref("/max");
-
+  var userReference = firebase.database().ref('/thu');
+  // .set({TestMessage: 'GET Request'})
     //Attach an asynchronous callback to read the data
-    userReference.once("value", function(snapshot) {
-        console.log(snapshot.val());
-      });
+    // userReference.on("value", function(snapshot) {
+    //     console.log(snapshot.val());
+    //   });
       res.send('hi')
 	// userReference.once("value", 
 	// 		  function(snapshot) {

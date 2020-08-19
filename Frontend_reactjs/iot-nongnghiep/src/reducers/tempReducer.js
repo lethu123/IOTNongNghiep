@@ -1,4 +1,4 @@
-import { MAX, MIN, TEMP, AUTO_MODE, CONTROL_LED, STATUS_UPDATE_MODE, STATUS_UPDATE_CONTROL } from '../actions/types';
+import { MAX, MIN, TEMP, AUTO_MODE, CONTROL_LIGHT_GREEN, CONTROL_TEMP_RED, CONTROL_TEMP_BLUE, CONTROL_LIGHT_WHITE } from '../actions/types';
 
 const initialState = {
     data: [],
@@ -6,9 +6,11 @@ const initialState = {
     max: {},
     min: {},
     auto: null,
-    control_led: null,
-    status_mode: "",
-    status_control: ""
+    control_light_green: null,
+    control_light_white: null,
+    CONTROL_LIGHT_GREEN: null,
+    control_temp_red: null,
+    control_temp_blue: null,
 }
 
 const tempReducer = (state = initialState, action) => {
@@ -50,17 +52,30 @@ const tempReducer = (state = initialState, action) => {
             }
         }
 
-        case CONTROL_LED: {
+        case CONTROL_LIGHT_GREEN: {
             return {
                 ...state,
-                control_led: action.res_api === 1 ? true : false
+                control_light_green: action.res_api === 1 ? true : false
+            }
+        }
+        case CONTROL_LIGHT_WHITE: {
+            return {
+                ...state,
+                control_light_white: action.res_api === 1 ? true : false
             }
         }
 
-        case STATUS_UPDATE_MODE: {
-            console.log("status", action.res_api);
+        case CONTROL_TEMP_RED: {
             return {
                 ...state,
+                control_temp_red: action.res_api === 1 ? true : false
+            }
+        }
+
+        case CONTROL_TEMP_BLUE: {
+            return {
+                ...state,
+                control_temp_blue: action.res_api === 1 ? true : false
             }
         }
 

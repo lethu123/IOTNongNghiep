@@ -5,12 +5,12 @@ void fire()
     nd = temperature;
     Firebase.setString("currentTemp", String(temperature) );
     // statistical: thống kê
-    Firebase.setString("statistical/" +String(dayStamp) +"/"+ String(timeStamp), String(temperature) ); 
+    Firebase.setString("statistical/" + String(dayStamp) + "/" + String(timeStamp) , String(temperature) );
     if (temperature > NDmax)
     { NDmax = temperature;
       Firebase.setString("max/temp", String(NDmax) );
       Firebase.setString("max/time", String(timeStamp) );
-    //      difference: độ chêch lệch
+      //      difference: độ chêch lệch
       Firebase.setString("difference", String(NDmax - NDmin) );
     }
     if (temperature < NDmin)

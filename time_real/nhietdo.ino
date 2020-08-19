@@ -6,4 +6,3 @@ void nhietdo()
   Serial.println("*C");
 
 }
-
