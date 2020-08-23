@@ -7,3 +7,5 @@ export const CONTROL_LIGHT_WHITE = "CONTROL_LIGHT_WHITE";
 export const CONTROL_TEMP_RED = "CONTROL_TEMP_RED";
 export const CONTROL_TEMP_BLUE = "CONTROL_TEMP_BLUE";
 export const CURRENT_USER = "CURRENT_USER";
+export const TEMP_MAX = "TEMP_MAX";
+export const TEMP_MIN = "TEMP_MIN";

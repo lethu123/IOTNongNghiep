@@ -101,21 +101,18 @@ void setup() {
 
 }
 void loop() {
-
-
+  fire_set();
   while (!timeClient.update()) {
     timeClient.forceUpdate();
   }
-
 
   AnalogValue = analogRead(pinAnaLight);     // Đọc giá trị analog từ chân A0
   Serial.println(AnalogValue);
 
   time_r();
-  fire_set();
   nhietdo();
   fire();
   den();
-
   delay(200);
+  
 }

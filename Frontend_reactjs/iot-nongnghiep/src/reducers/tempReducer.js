@@ -1,4 +1,4 @@
-import { MAX, MIN, TEMP, AUTO_MODE, CONTROL_LIGHT_GREEN, CONTROL_TEMP_RED, CONTROL_TEMP_BLUE, CONTROL_LIGHT_WHITE } from '../actions/types';
+import { MAX, MIN, TEMP, AUTO_MODE, CONTROL_LIGHT_GREEN, CONTROL_TEMP_RED, CONTROL_TEMP_BLUE, CONTROL_LIGHT_WHITE, TEMP_MIN, TEMP_MAX } from '../actions/types';
 
 const initialState = {
     data: [],
@@ -11,6 +11,8 @@ const initialState = {
     CONTROL_LIGHT_GREEN: null,
     control_temp_red: null,
     control_temp_blue: null,
+    control_max: null,
+    control_min: null
 }
 
 const tempReducer = (state = initialState, action) => {
@@ -42,6 +44,20 @@ const tempReducer = (state = initialState, action) => {
             return {
                 ...state,
                 min: action.res_api
+            }
+        }
+
+        case TEMP_MIN: {
+            return {
+                ...state,
+                control_min: action.res_api
+            }
+        }
+
+        case TEMP_MAX: {
+            return {
+                ...state,
+                control_max: action.res_api
             }
         }
 

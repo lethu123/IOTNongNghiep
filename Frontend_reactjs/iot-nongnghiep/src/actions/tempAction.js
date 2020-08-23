@@ -1,6 +1,6 @@
 import { firebaseConnect } from '../firebaseConnect';
 import { getCurrent } from "../helper-func";
-import { MAX, MIN, TEMP, AUTO_MODE, CONTROL_LIGHT_GREEN, CONTROL_TEMP_RED, CONTROL_TEMP_BLUE, CONTROL_LIGHT_WHITE } from './types';
+import { MAX, MIN, TEMP, AUTO_MODE, CONTROL_LIGHT_GREEN, CONTROL_TEMP_RED, CONTROL_TEMP_BLUE, CONTROL_LIGHT_WHITE, TEMP_MAX, TEMP_MIN } from './types';
 
 export const getTemp = () => async dispatch => {
     const today = getCurrent();
@@ -26,6 +26,25 @@ export const getMinTemp = () => async dispatch => {
     firebaseConnect.child('min').on('value', snapshop => {
         dispatch({
             type: MIN,
+            res_api: snapshop.val()
+        })
+    })
+}
+
+export const getControlMaxTemp = () => async dispatch => {
+    firebaseConnect.child('setControl/max').on('value', snapshop => {
+        dispatch({
+            type: TEMP_MAX,
+            res_api: snapshop.val()
+        })
+    })
+}
+
+
+export const getControlMinTemp = () => async dispatch => {
+    firebaseConnect.child('setControl/min').on('value', snapshop => {
+        dispatch({
+            type: TEMP_MIN,
             res_api: snapshop.val()
         })
     })
@@ -124,4 +143,18 @@ export const updateControlTempBlue = (status) => async dispatch => {
         )
         .then(snapshot => snapshot.val())
         .catch(error => console.log("jdsjhd", error));
+}
+
+export const updateControlMaxMin = (max, min) => async dispatch => {
+    console.log("mac", max);
+    let ref = firebaseConnect.child('setControl');
+    ref.update({
+        'max': max,
+        'min': min,
+        'avg': Math.round(((max + min) / 2) * 100) / 100
+    }).then(() => {
+        dispatch(getControlMaxTemp());
+        dispatch(getControlMinTemp());
+    }).then(snapshot => snapshot.val())
+        .catch(error => console.log("max", error));
 }

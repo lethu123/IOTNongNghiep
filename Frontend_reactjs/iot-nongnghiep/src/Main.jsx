@@ -3,9 +3,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import './App.scss';
 import { Line } from "react-chartjs-2";
 import { Switch } from '@material-ui/core';
-import { getTemp, getMaxTemp, getMinTemp, getModeAuto, updateModeAuto, getControlLightGreen, getControlTempRed, getControlTempBlue, updateControlLightGreen, updateControlTempRed, updateControlTempBlue, getControlLightWhite, updateControlLightWhite } from './actions/tempAction';
+import { getTemp, getMaxTemp, getMinTemp, getModeAuto, updateModeAuto, getControlLightGreen, getControlTempRed, getControlTempBlue, updateControlLightGreen, updateControlTempRed, updateControlTempBlue, getControlLightWhite, updateControlLightWhite, getControlMaxTemp, getControlMinTemp, updateControlMaxMin } from './actions/tempAction';
 import { Redirect } from 'react-router-dom';
 import { is_auth } from './actions/loginAction';
+import { getCurrentFE } from './helper-func';
 
 
 const Main = () => {
@@ -20,15 +21,21 @@ const Main = () => {
     const _controlLightWhite = useSelector(state => state.tempReducer.control_light_white);
     const _controlTempRed = useSelector(state => state.tempReducer.control_temp_red);
     const _controlTempBlue = useSelector(state => state.tempReducer.control_temp_blue);
+    const _control_max = useSelector(state => state.tempReducer.control_max);
+    const _control_min = useSelector(state => state.tempReducer.control_min);
 
     const [auto, setAuto] = useState();
     const [controlLight, setControlLight] = useState();
     const [controlLightWhite, setControlLightWhite] = useState();
     const [controlTempRed, setControlTempRed] = useState();
     const [controlTempBlue, setControlTempBlue] = useState();
+    const [temp, setTemp] = useState({
+        maxtemp: _control_max,
+        mintemp: _control_min
+    })
 
     let user = JSON.parse(localStorage.getItem('user'));
-
+    const date = getCurrentFE();
 
     useEffect(() => {
         if (!user) {
@@ -43,6 +50,8 @@ const Main = () => {
         dispatch(getControlLightWhite());
         dispatch(getControlTempRed());
         dispatch(getControlTempBlue());
+        dispatch(getControlMaxTemp());
+        dispatch(getControlMinTemp());
 
         return () => { }
     }, [])
@@ -74,12 +83,42 @@ const Main = () => {
         dispatch(updateControlTempBlue(!controlTempBlue));
     }
 
+    const onChangeTemp = (e) => {
+        setTemp({ ...temp, [e.target.name]: e.target.value });
+    }
+    const submit = (e) => {
+        e.preventDefault();
+        let tempControl = {
+            min: _control_min,
+            max: _control_max
+        }
+        if (temp.maxtemp) {
+            tempControl.max = parseFloat(temp.maxtemp);
+        }
+        if (temp.mintemp) {
+            tempControl.min = parseFloat(temp.mintemp);
+        }
+        dispatch(updateControlMaxMin(tempControl.max, tempControl.min));
+        setTemp({maxtemp: '', mintemp: ''});
+
+    }
+    const handleLogout = () => {
+        localStorage.clear();
+        window.location.href = "/login";
+    }
 
     return (
         <>
             {!user ? <Redirect to="/login" /> :
                 <div className="container py-5">
-                    <h3 className="text-center mb-5">Xin chào, {user.username}</h3>
+                    <h3 className="title mb-5">
+                        <span>{date}</span>
+                        <span className="text-success"> Xin chào, {user.username}</span>
+
+                        <button className="border-0 btn-danger" onClick={handleLogout} data-toggle="tooltip" data-placement="bottom" title="Đăng xuất">
+                            <i className="fa fa-sign-in-alt"></i>
+                        </button>
+                    </h3>
                     <hr />
                     <Line
                         data={{
@@ -122,6 +161,19 @@ const Main = () => {
                         <div className="col-md-6">
                             <h4>Chế độ auto</h4>
                             <div>Off   <Switch checked={auto_mode} onChange={toggleAuto} />  On</div>
+                            <hr />
+                            <h4>Thay đổi nhiệt độ</h4>
+                            <form className="was-validated mt-2" onSubmit={submit}>
+                                <div className="form-group dk">
+                                    <label htmlFor="uname">Nhiệt độ max: {_control_max} °C</label>
+                                    <input type="text" className="form-control" id="uname" name="maxtemp" value={temp.maxtemp} onChange={onChangeTemp} />
+                                </div>
+                                <div className="form-group dk">
+                                    <label htmlFor="pwd">Nhiệt độ min: {_control_min} °C</label>
+                                    <input type="text" className="form-control" id="pwd" value={temp.mintemp} name="mintemp" onChange={onChangeTemp} />
+                                </div>
+                                <button type="submit" className="btn btn-primary">Submit</button>
+                            </form>
 
                         </div>
                         {!auto_mode ?
